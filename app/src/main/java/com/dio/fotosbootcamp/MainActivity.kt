@@ -12,6 +12,11 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
+    companion object {
+        private val PERMISSION_CODE_IMAGE_PICK = 1000
+        private val IMAGE_PICK_CODE = 1001
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -21,7 +26,7 @@ class MainActivity : AppCompatActivity() {
                 if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_DENIED) {
                     val permission = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-                    requestPermissions(permission, PERMISSION_CODE)
+                    requestPermissions(permission, PERMISSION_CODE_IMAGE_PICK)
                 } else {
                     pickImageFromGalery()
                 }
@@ -29,12 +34,6 @@ class MainActivity : AppCompatActivity() {
                 pickImageFromGalery()
             }
         }
-    }
-
-    private fun pickImageFromGalery() {
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/*"
-        startActivityForResult(intent, IMAGE_PICK_CODE)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -50,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         when (requestCode) {
-            PERMISSION_CODE -> {
+            PERMISSION_CODE_IMAGE_PICK -> {
                 if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     pickImageFromGalery()
                 } else {
@@ -59,8 +58,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-    companion object {
-        private val PERMISSION_CODE = 1000
-        private val IMAGE_PICK_CODE = 1001
+
+    private fun pickImageFromGalery() {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        startActivityForResult(intent, IMAGE_PICK_CODE)
     }
+
 }
